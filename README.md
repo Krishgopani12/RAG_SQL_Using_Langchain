@@ -97,7 +97,6 @@ python src/app.py
 - "Show me the top 5 selling products."
 - "What is the total revenue for each category?"
 
-
 ## Features in Detail
 
 ### RAG System
@@ -109,8 +108,6 @@ python src/app.py
 ### SQL Integration
 - Natural language to SQL conversion
 - Support for complex queries
-- Error handling for edge cases
-- Special handling for travel-related queries
 
 ### Web Interface
 - Real-time query processing

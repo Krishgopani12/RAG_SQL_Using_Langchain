@@ -153,10 +153,6 @@ class SQLDatabaseAgent:
             str: Response from the agent
         """
         try:
-            # Check if query is related to travel and contains airport codes
-            if self._is_travel_query(query):
-                return self._handle_travel_query(query)
-            
             # Use invoke instead of run to address deprecation warning
             try:
                 result = self.agent_executor.invoke({"input": query})
@@ -218,46 +214,6 @@ class SQLDatabaseAgent:
     def get_table_names(self) -> List[str]:
         """Get list of all table names in the database."""
         return self.db.get_usable_table_names()
-
-    def _is_travel_query(self, query: str) -> bool:
-        """Check if the query is related to travel."""
-        return re.search(r'\b[A-Z]{3}\b', query) is not None
-
-    def _handle_travel_query(self, query: str) -> str:
-        """Handle travel-related queries with special processing."""
-        try:
-            # Extract airport codes
-            airport_codes = re.findall(r'\b[A-Z]{3}\b', query)
-            
-            # Add guidance for the agent
-            enhanced_query = (
-                f"{query}\n\nNote: This query involves airport codes: {', '.join(airport_codes)}. "
-                f"When working with airport codes, ensure all data is treated as text/string values, "
-                f"not as numeric values. Do not attempt numeric operations on airport codes."
-            )
-            
-            # Use invoke instead of run with fallback
-            try:
-                result = self.agent_executor.invoke({"input": enhanced_query})
-                
-                # Extract the output from the response
-                if isinstance(result, dict) and "output" in result:
-                    return result["output"]
-                elif isinstance(result, str):
-                    return result
-                else:
-                    return f"Received response in unexpected format: {str(result)}"
-            except AttributeError:
-                # Fallback to direct run method if invoke is not available
-                print("Warning: Using deprecated run method as fallback")
-                return self.agent_executor.run(input=enhanced_query)
-                
-        except Exception as e:
-            return (
-                f"Error processing travel query: {str(e)}\n\n"
-                f"Tip: When querying about flights, please use the standard 3-letter airport codes "
-                f"(e.g., JFK for New York, LHR for London Heathrow). The system will treat these as text values."
-            )
 
     def _handle_numeric_type_error(self, query: str, error_msg: str) -> str:
         """Handle numeric type errors."""
