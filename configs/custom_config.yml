@@ -1,0 +1,48 @@
+# Vector Database Configuration
+vector_db_config:
+  # General settings for vector database
+  chunk_size: 10000
+  chunk_overlap: 2000
+  embedding_model: text-embedding-3-small
+  
+  # Document processing settings
+  supported_extensions:
+    - pdf
+    - txt
+    - docx
+    - csv
+    - xlsx
+    - html
+    - md
+  
+  # Collection settings
+  collections:
+    - name: "attention" # change the name of the collection
+      doc_dir: "data/unstructured_docs/" # add your documents here
+      vectordb_dir: "data/attention_vectordb" # name of the vector database
+      description: "Research papers on transformer mechanisms" # add a description of document here
+
+# SQL Database Configuration
+sql_db_config:
+  # SQLite databases
+  sqlite:
+    databases:
+      - name: "olist-db" # change the name of the database
+        path: "data/olist.sqlite" # add the path to your SQLite database
+        description: "E-commerce information database" # add a description of the database here
+
+# LLM Configuration
+llm_config:
+  model: "gpt-4o-mini"              # Model to use
+  temperature: 0.5                   # Response creativity (0.0 to 1.0)
+  max_tokens: 1000                   # Maximum response length
+  api_key: "${OPENAI_API_KEY}"
+
+# Application Settings
+app_config:
+  host: "0.0.0.0"                   # Server host
+  port: 7860                        # Server port
+  debug: false                      # Debug mode
+  enable_queue: true                # Enable request queue
+  auth_required: false              # Enable authentication
+  max_threads: 4                    # Maximum worker threads 
